@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { type CSSProperties, type KeyboardEvent, type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from 'react';
 import { getSealEdgePath, getSealEdgeY, SEAL_START_X, SEAL_END_X } from './sealGeometry';
+import { assetUrl } from '../utils/assetUrl';
 
 type PackSceneProps = {
   opening: boolean;
@@ -26,7 +27,7 @@ const PACK_SPARKLES = Array.from({ length: PACK_SPARKLE_COUNT }, (_, index) => {
     color: ['#f7efff', '#d8bdff', '#bc91f4'][index % 3],
   } as CSSProperties;
 });
-const PACK_IMAGE = '/assets/MAYBi_pack_04_signature.png';
+const PACK_IMAGE = assetUrl('assets/MAYBi_pack_04_signature.png');
 const PACK_ART_LEFT = .087;
 const PACK_ART_RIGHT = .913;
 const PACK_ART_WIDTH = PACK_ART_RIGHT - PACK_ART_LEFT;

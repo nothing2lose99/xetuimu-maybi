@@ -5,6 +5,7 @@ import { CollectionPanel, type ReceivedItemEntry } from './components/Collection
 import { PackBackground } from './components/PackBackground';
 import { PackScene } from './components/PackScene';
 import { formatPrice, items } from './data/items';
+import { assetUrl } from './utils/assetUrl';
 
 const PACK_OPEN_ANIMATION_MS = 1300;
 const REVEAL_AUTO_CLAIM_MS = 2000;
@@ -197,7 +198,7 @@ export default function App() {
     if (!hasStarted) return <StartScreen onStart={() => setHasStarted(true)} />;
 
     return <main className="app">
-        <img src="/assets/logo-maybi-white.webp" className="app-brand-logo" alt="MAYBI" />
+        <img src={assetUrl('assets/logo-maybi-white.webp')} className="app-brand-logo" alt="MAYBI" />
         <section className="stage">
             <PackBackground />
             <div className="pack-head">
@@ -282,11 +283,11 @@ function StartScreen({ onStart }: { onStart: () => void }) {
     return <main className="start-screen" aria-labelledby="start-screen-title">
         <h1 className="visually-hidden" id="start-screen-title">MAYBI — Blind Pack Thời Trang Xé Túi Mù</h1>
         <div className="start-screen-heading">
-            <img className="start-screen-logo" src="/assets/logo-maybi-white.webp" alt="MAYBI" />
+            <img className="start-screen-logo" src={assetUrl('assets/logo-maybi-white.webp')} alt="MAYBI" />
         </div>
         <picture className="start-screen-art" aria-hidden="true">
-            <source media="(max-width: 680px)" srcSet="/assets/tui-mu-maybi-start-screen-mobile-clean.png" />
-            <img src="/assets/tui-mu-maybi-start-screen-clean.png" alt="" />
+            <source media="(max-width: 680px)" srcSet={assetUrl('assets/tui-mu-maybi-start-screen-mobile-clean.png')} />
+            <img src={assetUrl('assets/tui-mu-maybi-start-screen-clean.png')} alt="" />
         </picture>
         <div className="start-screen-sparkles" aria-hidden="true">
             <span className="scene-sparkle scene-sparkle-one" />
@@ -301,15 +302,15 @@ function StartScreen({ onStart }: { onStart: () => void }) {
             <span className="scene-sparkle scene-sparkle-ten" />
         </div>
         <div className="start-screen-gems" aria-hidden="true">
-            <img className="start-screen-gem start-screen-gem-one" src="/assets/start-screen-diamond.png" alt="" />
-            <img className="start-screen-gem start-screen-gem-two" src="/assets/start-screen-heart.png" alt="" />
-            <img className="start-screen-gem start-screen-gem-three" src="/assets/start-screen-diamond.png" alt="" />
-            <img className="start-screen-gem start-screen-gem-four" src="/assets/start-screen-heart.png" alt="" />
-            <img className="start-screen-gem start-screen-gem-five" src="/assets/start-screen-diamond.png" alt="" />
-            <img className="start-screen-gem start-screen-gem-six" src="/assets/start-screen-heart.png" alt="" />
+            <img className="start-screen-gem start-screen-gem-one" src={assetUrl('assets/start-screen-diamond.png')} alt="" />
+            <img className="start-screen-gem start-screen-gem-two" src={assetUrl('assets/start-screen-heart.png')} alt="" />
+            <img className="start-screen-gem start-screen-gem-three" src={assetUrl('assets/start-screen-diamond.png')} alt="" />
+            <img className="start-screen-gem start-screen-gem-four" src={assetUrl('assets/start-screen-heart.png')} alt="" />
+            <img className="start-screen-gem start-screen-gem-five" src={assetUrl('assets/start-screen-diamond.png')} alt="" />
+            <img className="start-screen-gem start-screen-gem-six" src={assetUrl('assets/start-screen-heart.png')} alt="" />
         </div>
         <div className="start-screen-pack" aria-hidden="true">
-            <img src="/assets/MAYBi_pack_04_signature.png" alt="" />
+            <img src={assetUrl('assets/MAYBi_pack_04_signature.png')} alt="" />
         </div>
         <button className="start-button" type="button" onClick={onStart}>
             Bắt đầu
