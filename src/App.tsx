@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, ClipboardList, Share2, X } from 'lucide-react';
 import { CollectionPanel, type ReceivedItemEntry } from './components/CollectionPanel';
@@ -235,7 +235,7 @@ export default function App() {
             >
                 <span className="revealed-card">
                     <span className="revealed-card-visual">
-                        <img src={revealedItem.item.image} alt={revealedItem.item.name} />
+                        <img src={revealedItem.item.image} alt={revealedItem.item.name} decoding="async" />
                     </span>
                     <span className="revealed-card-details">
                         <span className="revealed-card-title">{revealedItem.item.name}</span>
@@ -300,14 +300,19 @@ export default function App() {
 }
 
 function StartScreen({ onStart }: { onStart: () => void }) {
-    return <main className="start-screen" aria-labelledby="start-screen-title">
+    const startScreenAssetStyle = {
+        '--start-screen-background-desktop': `url("${assetUrl('assets/tui-mu-maybi-start-screen-clean.webp')}")`,
+        '--start-screen-background-mobile': `url("${assetUrl('assets/tui-mu-maybi-start-screen-mobile-clean.webp')}")`,
+    } as CSSProperties;
+
+    return <main className="start-screen" aria-labelledby="start-screen-title" style={startScreenAssetStyle}>
         <h1 className="visually-hidden" id="start-screen-title">MAYBI — Blind Pack Thời Trang Xé Túi Mù</h1>
         <div className="start-screen-heading">
             <img className="start-screen-logo" src={assetUrl('assets/logo-maybi-white.webp')} alt="MAYBI" />
         </div>
         <picture className="start-screen-art" aria-hidden="true">
             <source media="(max-width: 680px)" srcSet={assetUrl('assets/tui-mu-maybi-start-screen-mobile-clean.webp')} />
-            <img src={assetUrl('assets/tui-mu-maybi-start-screen-clean.webp')} alt="" />
+            <img src={assetUrl('assets/tui-mu-maybi-start-screen-clean.webp')} alt="" fetchPriority="high" decoding="async" />
         </picture>
         <div className="start-screen-sparkles" aria-hidden="true">
             <span className="scene-sparkle scene-sparkle-one" />

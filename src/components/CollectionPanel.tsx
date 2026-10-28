@@ -33,7 +33,7 @@ function PackItemPreview({ item, index, onOpenGallery }: ItemImageProps & { inde
       aria-label={`Xem ảnh chi tiết ${item.name}`}
       aria-haspopup="dialog"
     >
-      <img src={item.image} alt={item.name} loading="lazy" />
+      <img src={item.thumbnailImage} alt={item.name} loading="lazy" decoding="async" />
     </button>
   </motion.li>;
 }
@@ -56,7 +56,7 @@ function ReceivedItem({ item, onOpenGallery }: ItemImageProps) {
         aria-label={`Xem ảnh chi tiết ${item.name}`}
         aria-haspopup="dialog"
       >
-        <img src={item.image} alt={item.name} />
+        <img src={item.image} alt={item.name} loading="lazy" decoding="async" />
       </button>
     </div>
     <div className="received-details">
@@ -155,7 +155,7 @@ function ItemGalleryModal({ item, onClose }: { item: FashionItem; onClose: () =>
             exit={{ opacity: 0, scale: .985 }}
             transition={{ duration: .2 }}
           >
-            <img src={activeImage} alt={`${item.name} — ảnh chi tiết ${activeIndex + 1}`} />
+            <img src={activeImage} alt={`${item.name} — ảnh chi tiết ${activeIndex + 1}`} decoding="async" />
           </motion.figure>
         </AnimatePresence>
         {imageCount > 1 && <button type="button" className="gallery-nav gallery-next" onClick={showNext} aria-label="Xem ảnh tiếp theo">

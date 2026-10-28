@@ -416,7 +416,7 @@ export function PackScene({ opening, ripReady, onRipComplete }: PackSceneProps) 
             clipPath={ripReady || opening ? 'url(#pack-body-clip)' : undefined}
           />
         </svg>
-        <span className="pack-surface-light" aria-hidden="true" />
+        <span className="pack-surface-light" aria-hidden="true" style={{ '--pack-surface-mask': `url("${PACK_IMAGE}")` } as CSSProperties} />
       </div>
       {ripReady && <div className={`pack-rip-overlay ${dragging ? 'is-dragging' : ''}`} ref={peelOverlayRef}>
         <p className="rip-instruction">Giữ và kéo sang phải để mở</p>
