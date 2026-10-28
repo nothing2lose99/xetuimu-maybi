@@ -58,7 +58,7 @@ input {
   position: absolute;
   z-index: -2;
   inset: -24px;
-  background: url("/assets/tui-mu-maybi-start-screen-clean.png") center / cover no-repeat;
+  background: url("/assets/tui-mu-maybi-start-screen-clean.webp") center / cover no-repeat;
   filter: blur(18px) saturate(1.08);
   opacity: .58;
   transform: scale(1.06);
@@ -809,8 +809,8 @@ input {
   opacity: var(--surface-light-opacity, .72);
   background: none;
   mix-blend-mode: screen;
-  -webkit-mask: url("/assets/maybi-pack-refix-text.png") center / 100% 100% no-repeat;
-  mask: url("/assets/maybi-pack-refix-text.png") center / 100% 100% no-repeat;
+  -webkit-mask: url("/assets/maybi-pack-refix-text.webp") center / 100% 100% no-repeat;
+  mask: url("/assets/maybi-pack-refix-text.webp") center / 100% 100% no-repeat;
   filter: blur(.25px) saturate(1.08);
   transition: opacity .18s ease;
   will-change: opacity;
@@ -2653,7 +2653,7 @@ input {
   }
 
   .start-screen::before {
-    background-image: url("/assets/tui-mu-maybi-start-screen-mobile-clean.png");
+    background-image: url("/assets/tui-mu-maybi-start-screen-mobile-clean.webp");
   }
 
   .start-screen-heading {

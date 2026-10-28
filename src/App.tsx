@@ -306,8 +306,8 @@ function StartScreen({ onStart }: { onStart: () => void }) {
             <img className="start-screen-logo" src={assetUrl('assets/logo-maybi-white.webp')} alt="MAYBI" />
         </div>
         <picture className="start-screen-art" aria-hidden="true">
-            <source media="(max-width: 680px)" srcSet={assetUrl('assets/tui-mu-maybi-start-screen-mobile-clean.png')} />
-            <img src={assetUrl('assets/tui-mu-maybi-start-screen-clean.png')} alt="" />
+            <source media="(max-width: 680px)" srcSet={assetUrl('assets/tui-mu-maybi-start-screen-mobile-clean.webp')} />
+            <img src={assetUrl('assets/tui-mu-maybi-start-screen-clean.webp')} alt="" />
         </picture>
         <div className="start-screen-sparkles" aria-hidden="true">
             <span className="scene-sparkle scene-sparkle-one" />
@@ -322,15 +322,15 @@ function StartScreen({ onStart }: { onStart: () => void }) {
             <span className="scene-sparkle scene-sparkle-ten" />
         </div>
         <div className="start-screen-gems" aria-hidden="true">
-            <img className="start-screen-gem start-screen-gem-one" src={assetUrl('assets/start-screen-diamond.png')} alt="" />
-            <img className="start-screen-gem start-screen-gem-two" src={assetUrl('assets/start-screen-heart.png')} alt="" />
-            <img className="start-screen-gem start-screen-gem-three" src={assetUrl('assets/start-screen-diamond.png')} alt="" />
-            <img className="start-screen-gem start-screen-gem-four" src={assetUrl('assets/start-screen-heart.png')} alt="" />
-            <img className="start-screen-gem start-screen-gem-five" src={assetUrl('assets/start-screen-diamond.png')} alt="" />
-            <img className="start-screen-gem start-screen-gem-six" src={assetUrl('assets/start-screen-heart.png')} alt="" />
+            <img className="start-screen-gem start-screen-gem-one" src={assetUrl('assets/start-screen-diamond.webp')} alt="" />
+            <img className="start-screen-gem start-screen-gem-two" src={assetUrl('assets/start-screen-heart.webp')} alt="" />
+            <img className="start-screen-gem start-screen-gem-three" src={assetUrl('assets/start-screen-diamond.webp')} alt="" />
+            <img className="start-screen-gem start-screen-gem-four" src={assetUrl('assets/start-screen-heart.webp')} alt="" />
+            <img className="start-screen-gem start-screen-gem-five" src={assetUrl('assets/start-screen-diamond.webp')} alt="" />
+            <img className="start-screen-gem start-screen-gem-six" src={assetUrl('assets/start-screen-heart.webp')} alt="" />
         </div>
         <div className="start-screen-pack" aria-hidden="true">
-            <img src={assetUrl('assets/maybi-pack-refix-text.png')} alt="" />
+            <img src={assetUrl('assets/maybi-pack-refix-text.webp')} alt="" />
         </div>
         <button className="start-button" type="button" onClick={onStart}>
             PLAY NOW
