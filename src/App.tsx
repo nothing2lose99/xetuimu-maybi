@@ -6,6 +6,7 @@ import { PackBackground } from './components/PackBackground';
 import { PackScene } from './components/PackScene';
 import { formatPrice, items } from './data/items';
 import { assetUrl } from './utils/assetUrl';
+import { playSoundEffect, startBackgroundMusic } from './audio/soundEffects';
 
 const PACK_OPEN_ANIMATION_MS = 1300;
 const REVEAL_AUTO_CLAIM_MS = 2000;
@@ -94,6 +95,18 @@ export default function App() {
     useEffect(() => () => timerIds.current.forEach(window.clearTimeout), []);
 
     useEffect(() => {
+        startBackgroundMusic();
+    }, []);
+
+    useEffect(() => {
+        const playClickSound = (event: MouseEvent) => {
+            if ((event.target as Element | null)?.closest('button')) playSoundEffect('uiClick');
+        };
+        document.addEventListener('click', playClickSound, true);
+        return () => document.removeEventListener('click', playClickSound, true);
+    }, []);
+
+    useEffect(() => {
         try {
             const storedItems: StoredReceivedItem[] = receivedItems.map(entry => ({
                 receiptId: entry.receiptId,
@@ -163,8 +176,6 @@ export default function App() {
         setRipReady(false);
         setOpening(true);
         setRemainingPacks(remainingAfterOpen);
-        playRevealTone();
-
         schedule(() => {
             const item = pickUnownedItem(receivedItems);
             if (!item) {
@@ -175,6 +186,7 @@ export default function App() {
             const revealedEntry = { receiptId: createReceiptId(item.id), item };
             const completesCollection = receivedItemIds.size + 1 >= items.length;
             setRevealedItem(revealedEntry);
+            playSoundEffect('revealBuildUp');
             if (window.matchMedia('(max-width: 680px)').matches && window.scrollY <= 100) setScrollGuideVisible(true);
             setOpening(false);
             schedule(() => setClaimingItem(true), REVEAL_AUTO_CLAIM_MS - REVEAL_EXIT_ANIMATION_MS);
@@ -217,7 +229,7 @@ export default function App() {
                 <h1><span>✦</span> XÉ TÚI MÙ NHẬN DEAL 199K <span>✦</span></h1>
                 {/* <p className="tagline">Khám phá phong cách của bạn ♡</p> */}
             </div>
-            {!revealedItem && <PackScene opening={opening} ripReady={ripReady} onRipComplete={openPack} />}
+            {!revealedItem && <PackScene opening={opening} ripReady={ripReady} onRipComplete={openPack} onRipStart={() => playSoundEffect('packTear')} />}
             {revealedItem && <motion.div
                 className="revealed-item"
                 role="status"
@@ -337,28 +349,11 @@ function StartScreen({ onStart }: { onStart: () => void }) {
         <div className="start-screen-pack" aria-hidden="true">
             <img src={assetUrl('assets/maybi-pack-refix-text.webp')} alt="" />
         </div>
-        <button className="start-button" type="button" onClick={onStart}>
+        <button className="start-button" type="button" onClick={() => {
+            startBackgroundMusic();
+            onStart();
+        }}>
             PLAY NOW
         </button>
     </main>;
-}
-
-function playRevealTone() {
-    try {
-        const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-        const context = new AudioContextClass();
-        const oscillator = context.createOscillator();
-        const gain = context.createGain();
-        oscillator.connect(gain);
-        gain.connect(context.destination);
-        oscillator.frequency.setValueAtTime(260, context.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(880, context.currentTime + .45);
-        gain.gain.setValueAtTime(.05, context.currentTime);
-        gain.gain.exponentialRampToValueAtTime(.001, context.currentTime + .55);
-        oscillator.start();
-        oscillator.stop(context.currentTime + .6);
-        oscillator.addEventListener('ended', () => void context.close());
-    } catch {
-        // Audio is an enhancement; pack opening must still work when the browser blocks it.
-    }
 }

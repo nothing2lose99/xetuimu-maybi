@@ -7,6 +7,7 @@ type PackSceneProps = {
   opening: boolean;
   ripReady: boolean;
   onRipComplete: () => void;
+  onRipStart: () => void;
 };
 
 const PEEL_THRESHOLD = .7;
@@ -37,7 +38,7 @@ const SEAL_TOP_CLIP = `${SEAL_EDGE_PATH}V0H0Z`;
 
 const clamp = (value: number, minimum = 0, maximum = 1) => Math.min(maximum, Math.max(minimum, value));
 
-export function PackScene({ opening, ripReady, onRipComplete }: PackSceneProps) {
+export function PackScene({ opening, ripReady, onRipComplete, onRipStart }: PackSceneProps) {
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -53,6 +54,8 @@ export function PackScene({ opening, ripReady, onRipComplete }: PackSceneProps) 
   const progressRef = useRef(0);
   const visualProgressRef = useRef(0);
   const pendingProgressRef = useRef(0);
+  const lastDragClientXRef = useRef(0);
+  const draggedBackSinceLastSoundRef = useRef(false);
   const paintFrameRef = useRef<number | null>(null);
   const motionFrameRef = useRef<number | null>(null);
   const completionTimerRef = useRef<number | null>(null);
@@ -302,17 +305,27 @@ export function PackScene({ opening, ripReady, onRipComplete }: PackSceneProps) 
     peelOverlayRef.current?.classList.remove('is-resetting');
     activePointerRef.current = event.pointerId;
     pointerStartXRef.current = event.clientX;
+    lastDragClientXRef.current = event.clientX;
+    draggedBackSinceLastSoundRef.current = false;
     pointerStartProgressRef.current = progressRef.current;
     peelDistanceRef.current = Math.max(1, bounds.width);
     lastParticleProgressRef.current = Math.floor(progressRef.current / PEEL_PARTICLE_STEP) * PEEL_PARTICLE_STEP;
     event.currentTarget.setPointerCapture(event.pointerId);
     peelOverlayRef.current?.classList.add('is-dragging');
     setDragging(true);
+    onRipStart();
   };
 
   const moveRip = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (activePointerRef.current !== event.pointerId || completedRef.current) return;
     event.preventDefault();
+    const horizontalMovement = event.clientX - lastDragClientXRef.current;
+    if (horizontalMovement < -8) draggedBackSinceLastSoundRef.current = true;
+    else if (horizontalMovement > 8 && draggedBackSinceLastSoundRef.current) {
+      onRipStart();
+      draggedBackSinceLastSoundRef.current = false;
+    }
+    lastDragClientXRef.current = event.clientX;
     const previous = progressRef.current;
     const next = getDragProgress(event.clientX);
     queuePeelProgress(next);
