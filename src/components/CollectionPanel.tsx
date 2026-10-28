@@ -187,12 +187,12 @@ export function CollectionPanel({ receivedItems, isOpening, hasRevealedItem }: C
   }, [galleryItem]);
 
   return <>
-  <aside className="collection" aria-label="Thông tin pack">
+  <aside className="collection" id="collection-panel" aria-label="Thông tin pack">
     <section className="collection-section" aria-labelledby="pack-items-title">
       <header className="section-heading">
         <div className="collection-title">
           <ShoppingBag size={21} aria-hidden="true" />
-          <h2 id="pack-items-title">Item có trong pack</h2>
+          <h2 id="pack-items-title">Deal chờ xé</h2>
         </div>
         <span className="item-count">{items.length} item</span>
       </header>
@@ -206,7 +206,7 @@ export function CollectionPanel({ receivedItems, isOpening, hasRevealedItem }: C
       <header className="section-heading">
         <div className="collection-title">
           <Gift size={21} aria-hidden="true" />
-          <h2 id="received-item-title">Item nhận được</h2>
+          <h2 id="received-item-title">Deal nhận được</h2>
         </div>
       </header>
 
@@ -231,8 +231,8 @@ export function CollectionPanel({ receivedItems, isOpening, hasRevealedItem }: C
               <p>{isOpening
                 ? 'Pack đang được mở...'
                 : hasRevealedItem
-                  ? 'Item đang được thêm tự động...'
-                  : 'Mở pack để khám phá item của bạn'}</p>
+                  ? 'Deal đang được thêm tự động...'
+                  : 'Mở pack để khám phá deal của bạn'}</p>
             </motion.div>}
         </AnimatePresence>
       </div>

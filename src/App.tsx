@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Box, ClipboardList, Share2, X } from 'lucide-react';
+import { ArrowDown, ClipboardList, Share2, X } from 'lucide-react';
 import { CollectionPanel, type ReceivedItemEntry } from './components/CollectionPanel';
 import { PackBackground } from './components/PackBackground';
 import { PackScene } from './components/PackScene';
@@ -11,6 +11,7 @@ const PACK_OPEN_ANIMATION_MS = 1300;
 const REVEAL_AUTO_CLAIM_MS = 2000;
 const REVEAL_EXIT_ANIMATION_MS = 420;
 const PACKS_PER_ROUND = 3;
+const EXTRA_PACKS_PER_REWARD = 1;
 const START_SCREEN_ENABLED = true;
 const RECEIVED_ITEMS_STORAGE_KEY = 'maybi.received-items.v1';
 const PACK_ALLOWANCE_STORAGE_KEY = 'maybi.pack-allowance.v1';
@@ -85,6 +86,7 @@ export default function App() {
     const [remainingPacks, setRemainingPacks] = useState(loadRemainingPacks);
     const [surveyPacksUnlocked, setSurveyPacksUnlocked] = useState(loadSurveyPacksUnlocked);
     const [limitDialogOpen, setLimitDialogOpen] = useState(false);
+    const [scrollGuideVisible, setScrollGuideVisible] = useState(false);
     const timerIds = useRef<number[]>([]);
     const receivedItemIds = new Set(receivedItems.map(entry => entry.item.id));
     const collectionComplete = items.every(item => receivedItemIds.has(item.id));
@@ -128,6 +130,15 @@ export default function App() {
         return () => window.removeEventListener('keydown', closeOnEscape);
     }, [limitDialogOpen]);
 
+    useEffect(() => {
+        if (!scrollGuideVisible) return;
+        const hideGuideAfterScroll = () => {
+            if (window.scrollY > 100) setScrollGuideVisible(false);
+        };
+        window.addEventListener('scroll', hideGuideAfterScroll, { passive: true });
+        return () => window.removeEventListener('scroll', hideGuideAfterScroll);
+    }, [scrollGuideVisible]);
+
     const schedule = (callback: () => void, delay: number) => {
         const timerId = window.setTimeout(() => {
             timerIds.current = timerIds.current.filter(id => id !== timerId);
@@ -164,6 +175,7 @@ export default function App() {
             const revealedEntry = { receiptId: createReceiptId(item.id), item };
             const completesCollection = receivedItemIds.size + 1 >= items.length;
             setRevealedItem(revealedEntry);
+            if (window.matchMedia('(max-width: 680px)').matches && window.scrollY <= 100) setScrollGuideVisible(true);
             setOpening(false);
             schedule(() => setClaimingItem(true), REVEAL_AUTO_CLAIM_MS - REVEAL_EXIT_ANIMATION_MS);
             schedule(() => {
@@ -178,7 +190,7 @@ export default function App() {
     const shareOnFacebook = () => {
         const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
         window.open(shareUrl, '_blank', 'noopener,noreferrer');
-        setRemainingPacks(PACKS_PER_ROUND);
+        setRemainingPacks(current => Math.min(PACKS_PER_ROUND, current + EXTRA_PACKS_PER_REWARD));
         setLimitDialogOpen(false);
         setRipReady(false);
     };
@@ -186,7 +198,7 @@ export default function App() {
     const openSurvey = () => {
         window.open(SURVEY_URL, '_blank', 'noopener,noreferrer');
         setSurveyPacksUnlocked(true);
-        setRemainingPacks(PACKS_PER_ROUND);
+        setRemainingPacks(current => Math.min(PACKS_PER_ROUND, current + EXTRA_PACKS_PER_REWARD));
         setLimitDialogOpen(false);
         setRipReady(false);
     };
@@ -202,20 +214,20 @@ export default function App() {
         <section className="stage">
             <PackBackground />
             <div className="pack-head">
-                <p className="eyebrow">BLIND PACK THỜI TRANG</p>
-                <h1><span>✦</span> XÉ TÚI MÙ <span>✦</span></h1>
+                <h1><span>✦</span> XÉ TÚI MÙ NHẬN DEAL 199K <span>✦</span></h1>
                 {/* <p className="tagline">Khám phá phong cách của bạn ♡</p> */}
-                {!ripReady && <div className="pack-meta"><span className="pill"><Box size={15} />1 món / 1 pack</span></div>}
             </div>
             {!revealedItem && <PackScene opening={opening} ripReady={ripReady} onRipComplete={openPack} />}
             {revealedItem && <motion.div
                 className="revealed-item"
                 role="status"
-                aria-label={`${revealedItem.item.name} đang được thêm vào Item nhận được`}
+                aria-label={`${revealedItem.item.name} đang được thêm vào Deal nhận được`}
                 initial={{ opacity: 0, scale: .62, rotate: -5, y: 24 }}
                 transformTemplate={(_, generatedTransform) => `translate(-50%, -50%) ${generatedTransform}`}
                 animate={claimingItem
-                    ? { opacity: 0, scale: .68, x: '42vw', rotate: 7 }
+                    ? window.matchMedia('(max-width: 680px)').matches
+                        ? { opacity: 0, scale: .68, x: 0, y: '45vh', rotate: 7 }
+                        : { opacity: 0, scale: .68, x: '42vw', rotate: 7 }
                     : { opacity: 1, scale: 1, x: 0, rotate: 0, y: [0, -8, 0] }}
                 transition={claimingItem
                     ? { duration: .45, ease: 'easeInOut' }
@@ -239,18 +251,28 @@ export default function App() {
                         </span>
                     </span>
                 </span>
-                <span className="revealed-item-prompt">Đang thêm vào Item nhận được...</span>
+                <span className="revealed-item-prompt">Đang thêm vào Deal nhận được...</span>
             </motion.div>}
             <div className="stage-controls">
                 {!ripReady && !revealedItem && <button className={`primary ${shouldOpenSurvey || shouldShare ? 'share-primary' : ''}`} disabled={opening || collectionComplete} onClick={shouldOpenSurvey ? openSurvey : shouldShare ? shareOnFacebook : activateRip}>
-                    {shouldOpenSurvey && !opening ? <ClipboardList size={20} /> : shouldShare && !opening ? <Share2 size={20} /> : <Box size={20} />}
-                    {opening ? 'Đang mở...' : collectionComplete ? 'Đã nhận đủ 8 item' : shouldOpenSurvey ? 'Làm khảo sát' : shouldShare ? 'Share ngay' : 'Mở pack ngay'}
+                    {shouldOpenSurvey && !opening ? <ClipboardList size={20} /> : shouldShare && !opening ? <Share2 size={20} /> : null}
+                    {opening ? 'Đang mở...' : collectionComplete ? `Đã nhận đủ ${items.length} item` : shouldOpenSurvey ? 'Làm khảo sát' : shouldShare ? 'Share ngay' : 'XÉ NGAY'}
                 </button>}
                
             </div>
         </section>
 
         <CollectionPanel receivedItems={receivedItems} isOpening={opening} hasRevealedItem={Boolean(revealedItem)} />
+
+        {scrollGuideVisible && <button
+            className="scroll-guide"
+            type="button"
+            aria-label="Cuộn xuống Deal nhận được"
+            onClick={() => {
+                document.getElementById('collection-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setScrollGuideVisible(false);
+            }}
+        ><ArrowDown size={25} aria-hidden="true" /></button>}
 
         {limitDialogOpen && <div className="pack-limit-overlay" onClick={() => setLimitDialogOpen(false)}>
             <section
@@ -265,14 +287,12 @@ export default function App() {
                     <X size={17} />
                 </button>
                 <span className="pack-limit-icon" aria-hidden="true">{shouldOpenSurvey ? <ClipboardList size={22} /> : <Share2 size={22} />}</span>
-                <p className="pack-limit-kicker">GIỚI HẠN LƯỢT MỞ</p>
-                <h2 id="pack-limit-title">Quá giới hạn 3 pack</h2>
+                <h2 id="pack-limit-title">{shouldOpenSurvey ? 'HẾT LƯỢT!' : 'Hết lượt hôm nay!'}</h2>
                 <p id="pack-limit-description">{shouldOpenSurvey
-                    ? 'Làm khảo sát để nhận thêm 3 pack.'
-                    : 'Share Facebook để nhận thêm 3 pack.'}</p>
+                    ? 'Làm khảo sát để nhận thêm 1 lượt'
+                    : 'Share Minigame để nhận thêm lượt'}</p>
                 <button className="pack-limit-share" type="button" onClick={shouldOpenSurvey ? openSurvey : shareOnFacebook} autoFocus>
-                    {shouldOpenSurvey ? <ClipboardList size={17} /> : <Share2 size={17} />}
-                    {shouldOpenSurvey ? 'Làm khảo sát' : 'Share ngay'}
+                    {shouldOpenSurvey ? 'Khảo sát' : <><Share2 size={17} />Share ngay</>}
                 </button>
             </section>
         </div>}
@@ -310,10 +330,10 @@ function StartScreen({ onStart }: { onStart: () => void }) {
             <img className="start-screen-gem start-screen-gem-six" src={assetUrl('assets/start-screen-heart.png')} alt="" />
         </div>
         <div className="start-screen-pack" aria-hidden="true">
-            <img src={assetUrl('assets/MAYBi_pack_04_signature.png')} alt="" />
+            <img src={assetUrl('assets/maybi-pack-refix-text.png')} alt="" />
         </div>
         <button className="start-button" type="button" onClick={onStart}>
-            Bắt đầu
+            PLAY NOW
         </button>
     </main>;
 }
