@@ -23,4 +23,4 @@ The legacy project stored CSS, JS and images under separate `public/css`, `publi
 - `src/styles` — app styling
 - `public/assets` — static image assets only
 
-Unused `pack-art.png` was removed. The old Pokémon-oriented DOM/render code was replaced with typed React state and components..test
+Unused `pack-art.png` was removed. The old Pokémon-oriented DOM/render code was replaced with typed React state and components..testdadad
