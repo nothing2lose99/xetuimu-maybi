@@ -1,8 +1,9 @@
-type SoundName = 'uiClick' | 'packTear' | 'revealBuildUp' | 'backgroundMusic';
+type SoundName = 'uiClick' | 'packSelect' | 'packTear' | 'revealBuildUp' | 'backgroundMusic';
 
 const SOUND_FILES: Record<SoundName, string> = {
   uiClick: '02_ui_click.mp3',
-  packTear: '04_pack_tear.mp3',
+  packSelect: '03_pack_select.mp3',
+  packTear: 'MAYBI_Plastic_Bag_Tear_v2.mp3',
   revealBuildUp: '05_reveal_build_up.mp3',
   backgroundMusic: 'MAYBI_Doll_Dress_Up_BGM_v2.mp3',
 };

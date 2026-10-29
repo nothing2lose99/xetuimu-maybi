@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Gift, ShoppingBag, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { formatPrice, items, type FashionItem } from '../data/items';
+import { playSoundEffect } from '../audio/soundEffects';
 
 type CollectionPanelProps = {
   receivedItems: ReceivedItemEntry[];
@@ -76,6 +77,7 @@ function ReceivedItem({ item, onOpenGallery }: ItemImageProps) {
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Mua ngay ${item.name} — mở trong tab mới`}
+            onClick={() => playSoundEffect('packSelect')}
           >Mua ngay</a>
           : <button
             type="button"
